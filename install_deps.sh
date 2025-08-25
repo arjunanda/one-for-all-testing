@@ -28,7 +28,7 @@ install_chocolatey() {
 
 # Function to install Python
 install_python() {
-    echo "Installing Python..."
+    echo "Installing Python and setting up environment..."
     if [ "$WINDOWS" = true ]; then
         # Install Python via Chocolatey
         choco install python -y
@@ -37,11 +37,44 @@ install_python() {
     else
         # Linux installation
         apt update
-        apt install -y python3 python3-pip
+        apt install -y python3 python3-pip python3-venv python3-full pipx
+        
+        # Add pipx to PATH
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+        export PATH="$HOME/.local/bin:$PATH"
     fi
     
     # Verify installation
     python --version || python3 --version
+    
+    # Setup virtual environment for pentest tools
+    setup_python_venv
+}
+
+# Function to setup Python virtual environment
+setup_python_venv() {
+    echo "Setting up Python virtual environment for pentest tools..."
+    
+    # Create virtual environment
+    python3 -m venv ~/pentest-venv
+    
+    # Activate virtual environment
+    source ~/pentest-venv/bin/activate
+    
+    # Upgrade pip
+    pip install --upgrade pip
+    
+    # Create activation script for easy use
+    cat > ~/pentest-tools/activate-venv.sh << 'EOF'
+#!/bin/bash
+source ~/pentest-venv/bin/activate
+echo "Python virtual environment activated for pentest tools"
+echo "To deactivate, run: deactivate"
+EOF
+    chmod +x ~/pentest-tools/activate-venv.sh
+    
+    echo "Virtual environment created at ~/pentest-venv"
+    echo "Use 'source ~/pentest-tools/activate-venv.sh' to activate"
 }
 
 # Function to install Git (if not present)
@@ -104,9 +137,20 @@ install_go() {
 install_web_testing_tools() {
     echo "Installing web testing tools..."
     
-    # Python-based tools
-    pip install --user requests beautifulsoup4 selenium paramiko urllib3 lxml
-    pip install --user sqlmap
+    # Ensure virtual environment is activated
+    if [ -z "$VIRTUAL_ENV" ]; then
+        echo "Activating virtual environment..."
+        source ~/pentest-venv/bin/activate
+    fi
+    
+    # Install Python-based tools in virtual environment
+    echo "Installing Python security libraries in virtual environment..."
+    pip install requests beautifulsoup4 selenium paramiko urllib3 lxml
+    pip install sqlmap dirsearch wfuzz shodan
+    
+    # Alternative: Install with pipx (if virtual env fails)
+    echo "Installing additional tools with pipx..."
+    pipx install sqlmap 2>/dev/null || echo "pipx install failed, using venv instead"
     
     # Install Nikto
     if [ "$WINDOWS" = true ]; then
@@ -117,7 +161,14 @@ install_web_testing_tools() {
         cd nikto/program
         echo "Nikto installed in /c/pentest-tools/nikto"
     else
-        apt install -y nikto
+        # Try to install nikto via apt first, fallback to git
+        apt install -y nikto 2>/dev/null || {
+            echo "Installing Nikto from source..."
+            cd ~/pentest-tools
+            git clone https://github.com/sullo/nikto.git
+            cd nikto/program
+            echo "Nikto installed in ~/pentest-tools/nikto"
+        }
     fi
     
     # Install Dirb/Gobuster alternatives
@@ -128,8 +179,11 @@ install_web_testing_tools() {
         # Install ffuf
         go install github.com/ffuf/ffuf@latest
     else
-        apt install -y dirb gobuster
-        go install github.com/ffuf/ffuf@latest
+        apt install -y dirb gobuster 2>/dev/null || {
+            echo "Installing directory tools via Go..."
+            go install github.com/OJ/gobuster/v3@latest
+            go install github.com/ffuf/ffuf@latest
+        }
     fi
 }
 
@@ -149,8 +203,12 @@ install_additional_tools() {
     # Install waybackurls
     go install github.com/tomnomnom/waybackurls@latest
     
-    # Additional Python tools
-    pip install --user dirsearch wfuzz shodan
+    # Install additional Python tools in virtual environment
+    if [ -z "$VIRTUAL_ENV" ]; then
+        source ~/pentest-venv/bin/activate
+    fi
+    
+    pip install shodan censys-python
 }
 
 # Function to create tool aliases
@@ -201,11 +259,21 @@ install_report_tools() {
         # Install MiKTeX for PDF generation
         choco install miktex -y
     else
-        apt install -y pandoc texlive-latex-base texlive-fonts-recommended
+        apt install -y pandoc texlive-latex-base texlive-fonts-recommended 2>/dev/null || {
+            echo "Installing pandoc via snap..."
+            snap install pandoc
+        }
     fi
     
-    # Install additional Python libraries for reports
-    pip install --user markdown jinja2 weasyprint
+    # Install additional Python libraries for reports in virtual environment
+    if [ -z "$VIRTUAL_ENV" ]; then
+        source ~/pentest-venv/bin/activate
+    fi
+    
+    pip install markdown jinja2 reportlab
+    
+    # Try weasyprint (might fail on some systems)
+    pip install weasyprint 2>/dev/null || echo "weasyprint installation failed, continuing..."
 }
 
 # Main installation function
@@ -242,7 +310,7 @@ main() {
     echo "=================================================="
     echo ""
     echo "Installed tools:"
-    echo "✓ Python with security libraries"
+    echo "✓ Python with virtual environment (~/pentest-venv)"
     echo "✓ Node.js and npm"
     echo "✓ Go language and Go-based tools"
     echo "✓ Ruby"
@@ -254,11 +322,13 @@ main() {
     echo ""
     echo "Tools location:"
     echo "- Go tools: ~/go/bin/"
-    echo "- Python tools: ~/.local/bin/ (or Python Scripts/)"
+    echo "- Python tools: ~/pentest-venv/bin/"
     echo "- Custom tools: ~/pentest-tools/"
     echo "- Wordlists: ~/wordlists/"
     echo ""
-    echo "Please restart your terminal to ensure all PATH changes take effect."
+    echo "IMPORTANT: To use Python tools, activate the virtual environment first:"
+    echo "source ~/pentest-tools/activate-venv.sh"
+    echo ""
     echo "Then you can run: bash pentest.sh -t <target_url>"
 }
 
