@@ -1252,25 +1252,6 @@ test_file_inclusion() {
     log_vuln "- RFI vulnerabilities: $(grep -c "RFI FOUND" "$OUTPUT_DIR/evidence/rfi_findings.txt" 2>/dev/null || echo 0)"
     log_vuln ""
 }
-                log_vuln "⚠️  **HIGH RISK**: Local File Inclusion vulnerability detected"
-                log_vuln "   - **Parameter**: $param"
-                log_vuln "   - **Payload**: \`${payload}\`"
-                log_vuln "   - **Evidence**: Windows boot.ini contents detected"
-                log_vuln "   - **Exploitation**: Windows file system access"
-                log_vuln ""
-                ((HIGH_VULNS++))
-                lfi_found=true
-            fi
-            
-            sleep 0.2
-        done
-    done
-    
-    if [ "$lfi_found" = false ]; then
-        log_vuln "✅ **No file inclusion vulnerabilities** detected in automated testing"
-        log_vuln ""
-    fi
-}
 
 # =============================================================================
 # COMMAND INJECTION TESTING
